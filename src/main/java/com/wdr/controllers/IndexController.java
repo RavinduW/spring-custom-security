@@ -20,4 +20,10 @@ public class IndexController {
         return "secured index";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @GetMapping("/user/all")
+    public String userIndex(){
+        return "normal user index";
+    }
+
 }

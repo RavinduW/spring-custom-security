@@ -1,6 +1,7 @@
 package com.wdr.models;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,12 +22,12 @@ public class User {
     @Column(name="username")
     private String username;
 
-    @Column(name="active")
-    private int active;
+    @Column(name="active",columnDefinition = "TINYINT(1)")
+    private boolean active;
 
     @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name="user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public User(User user) {
         this.email = user.getEmail();
@@ -71,19 +72,19 @@ public class User {
         this.username = username;
     }
 
-    public int getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(int active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
