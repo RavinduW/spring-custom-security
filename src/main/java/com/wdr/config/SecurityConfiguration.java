@@ -12,7 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+@EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true,proxyTargetClass = true)
 @EnableWebSecurity
 @EnableJpaRepositories(basePackageClasses = UserRepository.class)
 @Configuration
@@ -23,12 +27,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        HashMap<String,String> url = new HashMap<>();
+        url.put("/**/secured/**", "ADMIN");
+        url.put("/**/user/**","USER");
+
         http.csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("**/secured/**").hasAnyRole("ADMIN")
-                .antMatchers("**/user/**").authenticated()
-                .anyRequest().permitAll()
-                .and().formLogin().permitAll();
+        for(int i=0;i<url.size();i++) {
+            http.authorizeRequests()
+                    .antMatchers(url.keySet().toArray()[i].toString()).hasRole(url.get(url.keySet().toArray()[i].toString()))
+                    .anyRequest().authenticated()
+                    .and().formLogin().permitAll();
+        }
+
+        System.out.println("inside configure----");
+
     }
 
     @Override
